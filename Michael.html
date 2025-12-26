@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluid Stack Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fdf8f3; 
+            --box-color: rgba(255, 255, 255, 0.95);
+            --text-main: #4a3f35;
+            --text-light: #8e8279;
+            --accent: #f2e6da;
+        }
+
+        /* Smooth Scroll Snapping */
+        html {
+            scroll-snap-type: y proximity;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- THE GLASS PET --- */
+        #pet {
+            position: fixed;
+            width: 40px; height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(180, 160, 140, 0.15);
+            pointer-events: none;
+            z-index: 9999;
+            /* Smoother transitions for state changes */
+            transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
+                        height 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
+                        background 0.4s ease;
+            display: flex; justify-content: center; align-items: center;
+            will-change: transform;
+        }
+
+        #pet.active {
+            width: 80px; height: 80px;
+            background: rgba(210, 180, 140, 0.25);
+            border: 1.5px solid var(--text-main);
+        }
+
+        #pet::after {
+            content: '';
+            width: 4px; height: 4px;
+            background: var(--text-main);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        /* --- LAYOUT & FIXED STACKING --- */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page {
+            position: sticky;
+            top: 10vh;
+            height: 75vh;
+            width: 85%;
+            max-width: 850px;
+            margin-bottom: 60vh; /* Increased for smoother scroll travel */
+            
+            background: var(--box-color);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 50px rgba(180, 160, 140, 0.08);
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            box-sizing: border-box;
+            text-align: center;
+            
+            /* Snapping point */
+            scroll-snap-align: center;
+            
+            /* Smooth entry transition */
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+        }
+
+        #page1 { z-index: 1; }
+        #page2 { z-index: 2; }
+        #page3 { z-index: 3; }
+        #page4 { z-index: 4; margin-bottom: 20vh; }
+
+        /* --- PROJECTS SECTION --- */
+        .projects-section {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            background-color: var(--bg-color);
+            padding: 15vh 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scroll-snap-align: start;
+        }
+
+        .projects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            max-width: 1000px;
+        }
+
+        .project-circle {
+            width: 180px; height: 180px;
+            background: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none; color: var(--text-main);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.02);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .project-circle:hover { 
+            transform: scale(1.1) translateY(-10px);
+            box-shadow: 0 20px 50px rgba(180, 160, 140, 0.2);
+        }
+
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover; /* Prevents the image from stretching */
+            border-radius: 50%; /* Makes it a circle */
+            border: 4px solid var(--accent); /* Optional: adds a thematic border */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Typography */
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 3rem); margin-bottom: 20px; color: #3d342d; }
+        h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 20px; color: #3d342d; }
+        p { font-size: 1.15rem; line-height: 1; max-width: 600px; color: var(--text-light); font-weight: 300; }
+        .tag { padding: 8px 20px; background: var(--accent); border-radius: 50px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; color: #a69586; }
+        .contact-btn { margin-top: 40px; padding: 15px 45px; border: 1.5px solid var(--text-main); border-radius: 50px; text-decoration: none; color: var(--text-main); transition: 0.4s; font-weight: 500; }
+        .contact-btn:hover { background: var(--text-main); color: white; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+    <div id="pet"></div>
+
+    <div class="page-wrapper">
+        <section class="page" id="page1">
+            <span class="tag">About Me</span>
+            <img src="pp.jpeg" alt="Michael Chandra" class="profile-img">
+            <h1>張紹河 Michael Chandra</h1>
+            <p>Engineering & System Science Student at <strong>National Tsing Hua University (NTHU)</strong>.</p>
+            <p>Aspiring developer dedicated to building efficient systems and exploring the intersection of engineering and code.</p>
+        </section>
+
+        <section class="page" id="page2">
+            <span class="tag">Expertise</span>
+            <h2>Technical Foundation</h2>
+            <p>With <strong>6 years of Python</strong> and <strong>4 years of HTML</strong> experience, I specialize in creating functional, logic-driven applications and clean web interfaces.</p>
+            <p>I thrive on solving complex problems and regularly build experimental projects to stay at the forefront of modern technology.</p>
+        </section>
+
+        <section class="page" id="page3">
+            <span class="tag">Experience & Leadership</span>
+            <h2>Leadership at Heart</h2>
+            <p>As the former <strong>Head of the Computer Club</strong> in high school, I led technical workshops and managed large-scale school events to showcase student innovation.</p>
+            <p>These roles refined my ability to communicate technical concepts clearly and lead collaborative teams effectively.</p>
+        </section>
+
+        <section class="page" id="page4">
+            <span class="tag">Contact</span>
+            <h1>Let's Connect</h1>
+            <p>I am actively seeking opportunities where I can apply my programming skills to solve real-world engineering challenges.</p>
+            <p>Whether you have a question or just want to discuss the latest in tech, my inbox is always open.</p>
+            <a href="mailto:michaelchandra334@gmail.com" class="contact-btn">Get In Touch</a>
+        </section>
+
+        <div class="projects-section">
+            <span class="tag">Selected Works</span>
+            <h1>Showcase</h1>
+            <div class="projects-grid">
+                <a href="https://mchl-c.github.io/website/visual.html" class="project-circle">Voxel</a>
+                <a href="https://mchl-c.github.io/physics_lab_inertia/physics_lab.html" class="project-circle">Educational Web</a>
+                <a href="https://mchl-c.github.io/physics_final_s1/main.html" class="project-circle">Physics</a>
+                <a href="https://github.com/Mchl-C/Blackjack" class="project-circle">BlackJack</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pet = document.getElementById('pet');
+        const projectCircles = document.querySelectorAll('.project-circle');
+        
+        let mouseX = 0, mouseY = 0, petX = 0, petY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        projectCircles.forEach(circle => {
+            circle.addEventListener('mouseenter', () => pet.classList.add('active'));
+            circle.addEventListener('mouseleave', () => pet.classList.remove('active'));
+        });
+
+        function animate() {
+            // Speed adjusted to 0.08 for a "lazier", silkier follow effect
+            petX += (mouseX - petX) * 0.08;
+            petY += (mouseY - petY) * 0.08;
+            
+            const currentSize = pet.classList.contains('active') ? 40 : 20;
+            pet.style.transform = `translate(${petX - currentSize}px, ${petY - currentSize}px)`;
+            
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Optional: Fade out bottom pages as you scroll (Visual Smoothing)
+        window.addEventListener('scroll', () => {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                const rect = page.getBoundingClientRect();
+                // If the page is being covered, reduce its opacity
+                if (rect.top < 100 && rect.top > -500) {
+                    page.style.opacity = 1 + (rect.top / 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
